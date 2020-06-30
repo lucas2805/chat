@@ -66,7 +66,7 @@ if ( count($_POST) ) {
 
           <div class="form-group">
             <label for="senha">Senha</label>
-            <input class="form-control col-lg-12<?php echo isset($erro["senha"]) ? " is-invalid" : "";?>" type="text" maxlength="6" id="senha" name="senha" value="<?php echo $senha ?? null;?>">
+            <input class="form-control col-lg-12<?php echo isset($erro["senha"]) ? " is-invalid" : "";?>" type="password" maxlength="6" id="senha" name="senha" value="<?php echo $senha ?? null;?>">
             <div class="invalid-feedback"><?php echo $erro["senha"] ?? "";?></div>
           </div>
     
