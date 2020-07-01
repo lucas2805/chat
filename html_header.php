@@ -40,7 +40,7 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
           <a class="dropdown-item" href="/user-add.php">Cadastro</a>
-          <a class="dropdown-item" href="#">Another action</a>
+          <a class="dropdown-item" href="user-update.php">Alterar Dados</a>
           <a class="dropdown-item" href="#">Something else here</a>
         </div>
       </li>

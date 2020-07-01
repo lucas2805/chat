@@ -70,4 +70,6 @@ if ( count($_POST) ) {
 </div>
 
 </div>
+<?php
+require_once "../html_footer.php";
 
