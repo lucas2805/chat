@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+	</head>
+	<body>
+
+		<h2>SISTEMA COMERCIAL - AUTENTICAÇÃO</h2>
+
+		<form action="menu.php" method="POST">
+		  <div class="imgcontainer">
+			<img src="img/avatar_login.png" alt="Avatar" class="avatar">
+		  </div>
+
+		  <div class="container">
+			<label for="uname"><b>Nome de usuário</b></label>
+			<input type="text" placeholder="Entre com seu nome de usuário" name="login" required>
+
+			<label for="psw"><b>Senha</b></label>
+			<input type="password" placeholder="Entre com sua senha" name="senha" required>
+				
+			<button type="submit">Autenticar</button>
+			<label>
+			  <input type="checkbox" checked="checked" name="remember"> Lembre-me
+			</label>
+		  </div>
+
+		  <div class="container" style="background-color:#f1f1f1">
+			<button type="button" class="cancelbtn">Cancel</button>
+			<span class="psw">Esqueceu a <a href="#">senha?</a></span>
+		  </div>
+		</form>
+	</body>
+</html>

@@ -46,7 +46,7 @@
       </li>
     </ul>
 	<span class="navbar-text">
-      <a href="/login.php">Entre</a> ou <a href="javascript:void()">Cadastre-se</a>
+      <a href="/login.php">Entre</a> ou <a href="user-add.php">Cadastre-se</a>
     </span>
   </div>
 </nav>
