@@ -1,7 +1,6 @@
 <?php 
 session_start();
-if (isset($_SESSION["usuario"]) == false)
-	header("location:/login.php");
+require_once "functions.php";
 ?>
 
 <!DOCTYPE html>
@@ -50,11 +49,6 @@ if (isset($_SESSION["usuario"]) == false)
         </div>
       </li>
     </ul>
-	<span class="navbar-text">
-		<?php
-			if (isset($_SESSION["usuario"]))
-				echo '<a class="btn btn-sm btn-secondary" href="/logout.php">Sair do sistema</a>';			
-		;?>
-    </span>
+	<span class="navbar-text"></span>
   </div>
 </nav>
