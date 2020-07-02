@@ -1,38 +1,61 @@
 <?php 
-require_once "../html_header.php";
 
+/**
+ * Inicializa a $_SESSION e carrega o HTML do início,
+ * Mas não verifica se está logado
+ */
 
-// Se estiver logado a variável vai existir e o usuário será redirecionado imediatamente para a index.php
-if ( isset($_SESSION["user"]) )
+require_once "../html_header_public.php";
+
+/**
+ * Se existir uma $_SESSION redireciona para a página HOME,
+ * Não pode exibir login para quem já está logado.
+ */
+
+if ( isset($_SESSION["usuario"]) )
   header("location:/");
 
-// Se a quantidade de índices na variável $_POST for maior que zero entra no IF.
-// Lembrando que o valor zero é o mesmo que false
-
-$matricula = $_POST["matricula"] ?? null;
-$senha = $_POST["senha"] ?? null;
-
-$matricula = trim($matricula);
-$senha = trim($senha);
+/**
+ * Se a quantidade de indices da variável global $_POST for maior que zero (verdadeiro)
+ * então o formulário foi enviado, deve tratar os valores contidos nos índices
+ */
 
 if ( count($_POST) ) {
 
-    /**
-     * OS CAMPOS MATRICULA E SENHA SÃO OBRIGATÓRIOS
-     * 
-     * O ponto de exclamação significa: Se $matrícula é igual a zero ou false.
-     * Ex.: SE não $matrícula, ou $matricula == false
-     * Se atender ao critério executa o bloco do IF
-    */
+	$login = $_POST["login"] ?? null;
+	$login = trim($login);
 
-    if (!$matricula)
-        $erro["matricula"] = "Obrigatório valor numérico maior que zero";     
+	$senha = $_POST["senha"] ?? null;
+	$senha = trim($senha);
+
+    if (empty($login))
+		$erro["login"] = "Informe o login.";	  
     
-    if (strlen($senha) === 0 )
-        $erro["senha"] = "Comprimento de senha inválido";    
+    if (empty($senha))
+        $erro["senha"] = "Informe a senha.";    
 
-    if (!isset($erro))
-        echo "<h4>Próxima etapa, verificar no banco o usuário e senha ...</h4>";
+	if (isset($erro) === false)
+	{
+		$conexao = getConexao();
+		$stm = $conexao->prepare("SELECT id FROM usuarios WHERE login = ? AND senha = ?");
+		$stm->bind_param("ss", $login, $senha);
+		$stm->execute();
+
+		$rs = (array)$stm->get_result()->fetch_assoc();		
+		$stm->close();
+		$conexao->close();
+
+		/**
+		 * Retorna um número informando a quantidade de registros encontrados  
+		 */
+		if (count($rs))
+		{			
+			$_SESSION["usuario"] = $rs["id"];
+			header("location:/"); 
+		}			
+		else			
+			$erro["auth"] = "Usuario ou senha inválidos";		
+	}      
     
 }
 
@@ -43,22 +66,35 @@ if ( count($_POST) ) {
 	<div class="row">
 
     	<div class="offset-lg-4 col-lg-4">
-			<h2 class="text-center">Login no Site</h2>		
+			<h2 class="text-center">Login no Site</h2>	
+
+			<?php
+
+				if (isset($erro["auth"])){					
+					echo '<div class="alert mt-5 alert-warning alert-dismissible fade show" role="alert">'.
+						$erro["auth"].
+					'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'.
+						'<span aria-hidden="true">&times;</span>'.
+					'</button>'.
+					'</div>';
+				}
+				
+			?>	
 
 			<form class="mt-4" method="post">
 		
 			<div class="form-group">
-				<label for="matricula">Matrícula</label>
-				<input class="form-control col-lg-12<?php echo isset($erro["matricula"]) ? " is-invalid" : "";?>" type="text" maxlength="6" id="matricula" name="matricula" value="<?php echo $matricula ?? null;?>">
-				<div class="invalid-feedback"><?php echo $erro["matricula"] ?? "";?></div>
+				<label for="login">Login</label>
+				<input class="form-control col-lg-12<?php echo isset($erro["login"]) ? " is-invalid" : null;?>" type="text" maxlength="10" id="login" name="login" value="<?php echo $login ?? null;?>">
+				<div class="invalid-feedback"><?php echo $erro["login"] ?? "";?></div>
 			</div>
 
 			<div class="form-group">
 				<label for="senha">Senha</label>
-				<input class="form-control col-lg-12<?php echo isset($erro["senha"]) ? " is-invalid" : "";?>" type="password" maxlength="6" id="senha" name="senha" value="<?php echo $senha ?? null;?>">
+				<input class="form-control col-lg-12<?php echo isset($erro["senha"]) ? " is-invalid" : null;?>" type="password" maxlength="60" id="senha" name="senha" value="<?php echo $senha ?? null;?>">
 				<div class="invalid-feedback"><?php echo $erro["senha"] ?? "";?></div>
 			</div>
-		
+
 			<div class="form-group">
 				<button class="btn btn-success col-lg-12" type="submit" id="Logar no sistema">Acessar conteúdo</button>
 			</div>

@@ -1,4 +1,9 @@
-<?php session_start() ;?>
+<?php 
+session_start();
+if (isset($_SESSION["usuario"]) == false)
+	header("location:/login.php");
+?>
+
 <!DOCTYPE html>
 <head>
   <meta charset="UTF-8" />
@@ -46,7 +51,10 @@
       </li>
     </ul>
 	<span class="navbar-text">
-      <a href="/login.php">Entre</a> ou <a href="user-add.php">Cadastre-se</a>
+		<?php
+			if (isset($_SESSION["usuario"]))
+				echo '<a class="btn btn-sm btn-secondary" href="/logout.php">Sair do sistema</a>';			
+		;?>
     </span>
   </div>
 </nav>
