@@ -1,75 +1,136 @@
-
 <?php
-require_once "../html_header.php";
-if ( isset($_SESSION["user"]) )
-  header("location:/login.php");
 
-  $nome = $_POST ["nome"] ?? null;
-  $email = $_POST ["email"] ?? null;
-  $senha = $_POST ["senha"] ?? null;
+require_once "../html_header_public.php";
 
- $nome = trim($nome);
- $email = trim($email);
-$senha = trim($senha);
+/**
+ * Se a sessão do usuário foi iniciada (ele está logado)
+ * Redireciona para a página "index.php"
+ */
+if ( isset($_SESSION["usuario"]) )
+	header("location:/");
+
 
 if ( count($_POST) ) {
 
-    if (!$nome)
-        $erro["nome"] = "Obrigatório valor numérico maior que zero";     
-    
-    if (strlen($email) === 0 )
-        $erro["email"] = "E-mail Inválido";   
-        
-        if (strlen($senha) === 0 )
-        $erro["senha"] = "Comprimento de senha inválido"; 
+	$login = trim($_POST["login"] ?? null);
+	$nome = trim($_POST["nome"] ?? null);
+	$email = trim($_POST["email"] ?? null);
+	$senha = trim($_POST["senha"] ?? null);
+	$senha_confirmacao = trim($_POST["senha_confirmacao"] ?? null);
 
-    if (!isset($erro))
-        echo "<h4>Usúario cadastrado com sucesso.</h4>";
+    ($login) ?: $erro["login"] = "Campo obrigatório";		
+	($nome) ?: $erro["nome"] = "Campo obrigatório"; 
+	filter_var($email, FILTER_VALIDATE_EMAIL) ?: $erro["email"] = "Informe um email válido";
+    ($senha) ?: $erro["senha"] = "Campo obrigatório";
+	($senha_confirmacao) ?: $erro["senha_confirmacao"] = "Campo obrigatório";
+	
+	if ( ($senha && $senha_confirmacao) && ($senha !== $senha_confirmacao) )
+		$erro["senha"] = $erro["senha_confirmacao"] = "Valores não podem ser diferentes";
+	
+	if (!isset($erro)){
+
+		try {
+
+			/**
+			 * Cria (abre) uma conexão com o banco de dados
+			 */
+			$pdo = Database::getInstance();
+
+			/**
+			 * Declara um consulta preparada para evitar SQLinjection
+			 */	
+			$stm = $pdo->prepare("INSERT INTO usuarios (login, nome, senha, email) values (:login, :nome, :senha, :email)");
+
+			$stm->execute([
+				":login" => strtolower($login),
+				":nome" => $nome,
+				":senha" => password_hash($senha, PASSWORD_DEFAULT),
+				":email" => $email
+				]);	
+
+			/**
+			 * Retorna o último ID inserido no banco e atribui à $_SESSION
+			 * Depois redireciona para a index.php já autenticado
+			 */
+			$_SESSION["usuario"] = $pdo->lastInsertId();
+
+			header("location:/");
+
+		} catch (\PDOException $e){
+
+			if ($e->errorInfo[1] == 1062){
+
+				if (strstr($e->errorInfo[2],"usuarios.login"))
+					$erro["login"] = "Já existe no banco de dados";
+
+				if (strstr($e->errorInfo[2],"usuarios.email"))
+					$erro["email"] = "Já existe no banco de dados";
+			}
+
+		}
+
+	} 
     
 }
-
-
 
 
 ?>
 <div class="container">
 
-<div class="row">
+        <h2 class="text-center">Cadastro no site</h2>	
 
-    <div class="offset-lg-4 col-lg-4">
-        <h2 class="text-center">Cadastro no site</h2>		
+		<form class="mt-4" method="post" autocomplete="off">
 
-        <form class="mt-4" method="post">
-    
-        <div class="form-group">
-            <label for="nome">Nome</label>
-            <input class="form-control col-lg-12<?php echo isset($erro["nome"]) ? " is-invalid" : "";?>" type="text" maxlength="6" id="nome" name="nome" value="<?php echo $nome?? null;?>">
-            <div class="invalid-feedback"><?php echo $erro["nome"] ?? "";?></div>
-        </div>
+		<div class="row">
 
-        <div class="form-group">
-            <label for="email">E-mail</label>
-            <input class="form-control col-lg-12<?php echo isset($erro["email"]) ? " is-invalid" : "";?>" type="text" maxlength="20" id="email" name="email" value="<?php echo $email ?? null;?>">
-            <div class="invalid-feedback"><?php echo $erro["email"] ?? "";?></div>
-        </div>
+			<div class="offset-lg-3 col-lg-6">
 
-        <div class="form-group">
-            <label for="senha">Senha</label>
-            <input class="form-control col-lg-12<?php echo isset($erro["senha"]) ? " is-invalid" : "";?>" type="password" maxlength="6" id="senha" name="senha" value="<?php echo $senha ?? null;?>">
-            <div class="invalid-feedback"><?php echo $erro["senha"] ?? "";?></div>
-        </div>
-    
-        <div class="form-group">
-            <button class="btn btn-success col-lg-12" type="submit" id="Cadastrar no Sistema">Cadastre-se</button>
-        </div>
+				<div class="form-row">
+					<div class="form-group col-lg-12">
+						<label for="nome">Nome completo</label>
+						<input class="form-control<?php echo isset($erro["nome"]) ? " is-invalid" : "";?>" type="text" maxlength="255" id="nome" name="nome" value="<?php echo $nome ?? "";?>">
+						<div class="invalid-feedback"><?php echo $erro["nome"] ?? "";?></div>
+					</div>
+				</div>
+
+				<div class="form-row">
+					<div class="form-group col-lg-4">
+						<label for="nome">Login</label>
+						<input class="form-control<?php echo isset($erro["login"]) ? " is-invalid" : "";?>" type="text" maxlength="50" id="login" name="login" value="<?php echo $login ?? "";?>">
+						<div class="invalid-feedback"><?php echo $erro["login"] ?? "";?></div>
+					</div>
+					<div class="form-group col-lg-8">
+						<label for="email">Email</label>
+						<input class="form-control<?php echo isset($erro["email"]) ? " is-invalid" : "";?>" type="text" maxlength="50" id="email" name="email" value="<?php echo $email ?? "";?>">
+						<div class="invalid-feedback"><?php echo $erro["email"] ?? "";?></div>
+					</div>
+				</div>				
+
+				<div class="form-row">
+					<div class="form-group col-lg-6">
+						<label for="senha">Senha</label>
+						<input class="form-control<?php echo isset($erro["senha"]) ? " is-invalid" : "";?>" type="password" maxlength="6" id="senha" name="senha" value="<?php echo $senha ?? "";?>">
+						<div class="invalid-feedback"><?php echo $erro["senha"] ?? "";?></div>
+					</div>
+					<div class="form-group col-lg-6">
+						<label for="senha_confirmacao">Repita a senha</label>
+						<input class="form-control<?php echo isset($erro["senha_confirmacao"]) ? " is-invalid" : "";?>" type="password" maxlength="6" id="senha_confirmacao" name="senha_confirmacao" value="<?php echo $senha_confirmacao ?? "";?>">
+						<div class="invalid-feedback"><?php echo $erro["senha_confirmacao"] ?? "";?></div>
+					</div>
+				</div>
+
+				<div class="form-row">
+					<div class="form-group col-lg-12">
+						<button class="btn btn-success btn-block" type="submit" id="btn_cadastrar">Cadastrar</button>
+					</div>
+				</div>
+			
+			</div>	
+
+		</div>
 
         </form>
-
-    </div>
-
+ 
 </div>
-
-</div>
-<?php
+<?php 
 require_once "../html_footer.php";
-

@@ -1,6 +1,7 @@
 <?php 
 session_start();
 require_once "functions.php";
+require_once "database.php";
 ?>
 
 <!DOCTYPE html>
@@ -18,37 +19,53 @@ require_once "functions.php";
 <span class="navbar-toggler-icon"></span>
 	</button>
 	<div class="collapse navbar-collapse" id="navbarNavDropdown">
+		
 		<ul class="navbar-nav mr-auto">
+			<?php if (isset($_SESSION["usuario"]) ){ ;?>
 			<li class="nav-item active">	  
 				<a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
 			</li>
 			<li class="nav-item">
 				<a class="nav-link" href="disciplinas.php">Disciplinas</a>
 			</li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Pricing</a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown link
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Usuarios
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="/user-add.php">Cadastro</a>
-          <a class="dropdown-item" href="user-update.php">Alterar Dados</a>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
-      </li>
-    </ul>
-	<span class="navbar-text"></span>
+			<li class="nav-item">
+				<a class="nav-link" href="#">Pricing</a>
+			</li>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				Dropdown link
+				</a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+				<a class="dropdown-item" href="#">Action</a>
+				<a class="dropdown-item" href="#">Another action</a>
+				<a class="dropdown-item" href="#">Something else here</a>
+				</div>
+			</li>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				Usuarios
+				</a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+				<a class="dropdown-item" href="/user-add.php">Cadastro</a>
+				<a class="dropdown-item" href="user-update.php">Alterar Dados</a>
+				<a class="dropdown-item" href="#">Something else here</a>
+				</div>
+			</li>
+		<?php } ;?>	
+    	</ul>
+		
+		<span class="navbar-text">
+		<?php
+
+			/**
+			 * Se a sessão não foi iniciada (usuário não logou) e o nome do script é diferente de "/user-add"
+			 */
+			if (!isset($_SESSION["usuario"]) && $_SERVER["SCRIPT_NAME"] !== "/user-add.php")
+				echo '<a class="btn btn-sm btn-secondary" href="/user-add.php">Ainda não tem acesso? Cadastre-se aqui.</a>';			
+			
+			if ($_SERVER["SCRIPT_NAME"] == "/user-add.php")
+				echo '<a class="btn btn-sm btn-secondary" href="/login.php">Entrar com meu login e senha</a>';
+		;?>
+    </span>
   </div>
 </nav>

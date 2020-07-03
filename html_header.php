@@ -1,7 +1,12 @@
 <?php 
+
 session_start();
+
 if (isset($_SESSION["usuario"]) == false)
 	header("location:/login.php");
+
+require_once "database.php";
+
 ?>
 
 <!DOCTYPE html>
