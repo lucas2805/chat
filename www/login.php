@@ -8,8 +8,8 @@
 require_once "../html_header_public.php";
 
 /**
- * Se existir uma $_SESSION redireciona para a página HOME,
- * Não pode exibir login para quem já está logado.
+ * Se existir uma $_SESSION redireciona para a página "index.php",
+ * Não pode exibir a página login.php para quem já está logado.
  */
 
 if ( isset($_SESSION["usuario"]) )
@@ -29,74 +29,88 @@ if ( count($_POST) ) {
 	$senha = trim($senha);
 
     if (empty($login))
-		$erro["login"] = "Informe o login.";	  
+		$erro["login"] = "Campo obrigatório";	  
     
     if (empty($senha))
-        $erro["senha"] = "Informe a senha.";    
+        $erro["senha"] = "Campo obrigatório";    
 
 	if (isset($erro) === false)
 	{
-		$conexao = getConexao();
-		$stm = $conexao->prepare("SELECT id FROM usuarios WHERE login = ? AND senha = ?");
-		$stm->bind_param("ss", $login, $senha);
-		$stm->execute();
-
-		$rs = (array)$stm->get_result()->fetch_assoc();		
-		$stm->close();
-		$conexao->close();
+		/**
+		 * Abre a conexao com o banco de dados
+		 */
+		$pdo = Database::getInstance();
 
 		/**
-		 * Retorna um número informando a quantidade de registros encontrados  
+		 * Declara um consulta preparada para evitar SQLInjection
 		 */
-		if (count($rs))
-		{			
+		$stm = $pdo->prepare("SELECT id, senha FROM usuarios WHERE login = :login");
+
+		$stm->execute([
+			":login" => $login
+		]);
+
+		$rs = $stm->fetch();
+
+		/**
+		 * ($rs) -> Se a consulta retornou alguma linha retorna um array,
+		 * Caso contrário retorna FALSE
+		 */
+		if ($rs && password_verify($senha, $rs["senha"])){
+
 			$_SESSION["usuario"] = $rs["id"];
-			header("location:/"); 
-		}			
-		else			
-			$erro["auth"] = "Usuario ou senha inválidos";		
+			header("location:/");
+
+		} else 
+
+			$erro["auth"] = "Usuário e/ou senha inválido(s)";
+
 	}      
     
 }
+
 
 ?>
 
 <div class="container">
 
+
+
 	<div class="row">
 
     	<div class="offset-lg-4 col-lg-4">
-			<h2 class="text-center">Login no Site</h2>	
+
+			<h2 class="text-center">Autenticar</h2>	
 
 			<?php
-
-				if (isset($erro["auth"])){					
-					echo '<div class="alert mt-5 alert-warning alert-dismissible fade show" role="alert">'.
+				
+				if ($erro["auth"] ?? false){					
+					echo '<div class="alert alert-warning alert-dismissible fade show mt-5" role="alert">'.
 						$erro["auth"].
-					'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'.
-						'<span aria-hidden="true">&times;</span>'.
-					'</button>'.
-					'</div>';
+						'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'.
+							'<span aria-hidden="true">&times;</span>'.
+						'</button>'.
+						'</div>';
 				}
 				
-			?>	
+			?>
 
-			<form class="mt-4" method="post">
+			<form class="mt-4" method="post" autocomplete="off">
 		
 			<div class="form-group">
 				<label for="login">Login</label>
-				<input class="form-control col-lg-12<?php echo isset($erro["login"]) ? " is-invalid" : null;?>" type="text" maxlength="10" id="login" name="login" value="<?php echo $login ?? null;?>">
+				<input class="form-control col-lg-12<?php echo isset($erro["login"]) ? " is-invalid" : "";?>" type="text" name="login" value="<?php echo $login ?? "";?>">
 				<div class="invalid-feedback"><?php echo $erro["login"] ?? "";?></div>
 			</div>
 
 			<div class="form-group">
 				<label for="senha">Senha</label>
-				<input class="form-control col-lg-12<?php echo isset($erro["senha"]) ? " is-invalid" : null;?>" type="password" maxlength="60" id="senha" name="senha" value="<?php echo $senha ?? null;?>">
+				<input class="form-control col-lg-12<?php echo isset($erro["senha"]) ? " is-invalid" : "";?>" type="password" name="senha" value="<?php echo $senha ?? "";?>">
 				<div class="invalid-feedback"><?php echo $erro["senha"] ?? "";?></div>
 			</div>
 
 			<div class="form-group">
-				<button class="btn btn-success col-lg-12" type="submit" id="Logar no sistema">Acessar conteúdo</button>
+				<button class="btn btn-success col-lg-12" type="submit" id="Logar no sistema">Entrar</button>
 			</div>
 
 			</form>

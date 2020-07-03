@@ -11,7 +11,7 @@ require_once "../html_header.php";
 
         <h2 class="text-center">Home do Site</h2>
 
-		O conteúdo da variável global $_SESSION["usuario"] é: <?php echo $_SESSION["usuario"];?>
+		 <?php echo "O ID do usuário logado é: {$_SESSION["usuario"]}";?>
 
       </div>
 
