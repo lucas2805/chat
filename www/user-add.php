@@ -1,6 +1,7 @@
 <?php
 
-require_once "../html_header_public.php";
+require_once "../classes.php";
+require_once "../html_header.php";
 
 /**
  * Se a sessão do usuário foi iniciada (ele está logado)
@@ -52,7 +53,8 @@ if ( count($_POST) ) {
 			 * Retorna o último ID inserido no banco e atribui à $_SESSION
 			 * Depois redireciona para a index.php já autenticado
 			 */
-			$_SESSION["usuario"] = $pdo->lastInsertId();
+			$_SESSION["usuario"]["id"] = $pdo->lastInsertId();
+			$_SESSION["usuario"]["nome"] = $nome;
 
 			header("location:/");
 
@@ -61,10 +63,10 @@ if ( count($_POST) ) {
 			if ($e->errorInfo[1] == 1062){
 
 				if (strstr($e->errorInfo[2],"usuarios.login"))
-					$erro["login"] = "Já existe no banco de dados";
+					$erro["login"] = "Já existe este login";
 
 				if (strstr($e->errorInfo[2],"usuarios.email"))
-					$erro["email"] = "Já existe no banco de dados";
+					$erro["email"] = "Email já está cadastrado";
 			}
 
 		}
@@ -77,7 +79,7 @@ if ( count($_POST) ) {
 ?>
 <div class="container">
 
-        <h2 class="text-center">Cadastro no site</h2>	
+        <h2 class="text-center">Cadastro de Usuário</h2>	
 
 		<form class="mt-4" method="post" autocomplete="off">
 
@@ -130,6 +132,10 @@ if ( count($_POST) ) {
 		</div>
 
         </form>
+
+		<p class="text-center">
+			Entrar com seu usuário e senha? <a href="/login.php">Clique aqui.</a>
+		</p>
  
 </div>
 <?php 
