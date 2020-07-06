@@ -1,4 +1,6 @@
 <?php
+require_once "../classes.php";
+require_once "../auth.php";
 require_once "../html_header.php";
 ?>
 
@@ -10,8 +12,6 @@ require_once "../html_header.php";
       <div class="col-lg-12">
 
         <h2 class="text-center">Home do Site</h2>
-
-		 <?php echo "O ID do usuário logado é: {$_SESSION["usuario"]}";?>
 
       </div>
 

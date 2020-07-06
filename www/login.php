@@ -4,8 +4,8 @@
  * Inicializa a $_SESSION e carrega o HTML do início,
  * Mas não verifica se está logado
  */
-
-require_once "../html_header_public.php";
+require_once "../classes.php";
+require_once "../html_header.php";
 
 /**
  * Se existir uma $_SESSION redireciona para a página "index.php",
@@ -44,7 +44,7 @@ if ( count($_POST) ) {
 		/**
 		 * Declara um consulta preparada para evitar SQLInjection
 		 */
-		$stm = $pdo->prepare("SELECT id, senha FROM usuarios WHERE login = :login");
+		$stm = $pdo->prepare("SELECT id, nome, senha FROM usuarios WHERE login = :login");
 
 		$stm->execute([
 			":login" => $login
@@ -58,7 +58,8 @@ if ( count($_POST) ) {
 		 */
 		if ($rs && password_verify($senha, $rs["senha"])){
 
-			$_SESSION["usuario"] = $rs["id"];
+			$_SESSION["usuario"]["id"] = $rs["id"];
+			$_SESSION["usuario"]["nome"] = $rs["nome"];
 			header("location:/");
 
 		} else 
@@ -84,14 +85,8 @@ if ( count($_POST) ) {
 
 			<?php
 				
-				if ($erro["auth"] ?? false){					
-					echo '<div class="alert alert-warning alert-dismissible fade show mt-5" role="alert">'.
-						$erro["auth"].
-						'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'.
-							'<span aria-hidden="true">&times;</span>'.
-						'</button>'.
-						'</div>';
-				}
+				if ($erro["auth"] ?? false)					
+					echo Alert::getMessage($erro["auth"]);				
 				
 			?>
 
@@ -114,6 +109,8 @@ if ( count($_POST) ) {
 			</div>
 
 			</form>
+
+			<p class="text-center">Não possui cadastro? <a href="/user-add.php">Clique aqui.</p>
 
 		</div>
 

@@ -1,14 +1,3 @@
-<?php 
-
-session_start();
-
-if (isset($_SESSION["usuario"]) == false)
-	header("location:/login.php");
-
-require_once "database.php";
-
-?>
-
 <!DOCTYPE html>
 <head>
   <meta charset="UTF-8" />
@@ -24,42 +13,20 @@ require_once "database.php";
 <span class="navbar-toggler-icon"></span>
 	</button>
 	<div class="collapse navbar-collapse" id="navbarNavDropdown">
-		<ul class="navbar-nav mr-auto">
-			<li class="nav-item active">	  
-				<a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" href="disciplinas.php">Disciplinas</a>
-			</li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Pricing</a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown link
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Usuarios
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="/user-add.php">Cadastro</a>
-          <a class="dropdown-item" href="user-update.php">Alterar Dados</a>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
-      </li>
-    </ul>
-	<span class="navbar-text">
-		<?php
+
+	<?php
 			if (isset($_SESSION["usuario"]))
-				echo '<a class="btn btn-sm btn-secondary" href="/logout.php">Sair do sistema</a>';			
-		;?>
-    </span>
+				require_once "menu.php";
+	?>
+
+	<span class="navbar-text">
+
+		<?php
+		
+			if (isset($_SESSION["usuario"]))
+				echo $_SESSION["usuario"]["nome"] . '&nbsp;&nbsp;|&nbsp;&nbsp;<a href="/logout.php">Encerrar sessão</a>';
+		?>
+
+	</span>
   </div>
 </nav>

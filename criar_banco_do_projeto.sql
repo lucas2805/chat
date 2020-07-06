@@ -21,6 +21,18 @@ created_at timestamp not null default current_timestamp() on update current_time
 updated_at timestamp default null on update current_timestamp()
 );
 
+create table salas (
+id int unsigned not null primary key auto_increment,
+disciplinas_id int unsigned not null,
+usuarios_id int unsigned not null,
+tema varchar(255) not null,
+created_at timestamp not null default current_timestamp() on update current_timestamp(),
+closed_at timestamp default null,
+constraint fk_disciplinas_id foreign key (disciplinas_id) references disciplinas (id),
+constraint fk_usuarios_id foreign key (usuarios_id) references usuarios (id),
+constraint uq_disciplinas_id__tema unique (disciplinas_id, tema)
+);
+
 insert into usuarios 
 (login, nome, senha, email) 
 values

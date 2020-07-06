@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 class Database {
     
     private static $pdo;
@@ -8,7 +10,7 @@ class Database {
 
     }
 
-    public static function getInstance()
+    public static function getInstance():object
     {
         if (!isset(self::$pdo)){
             try {
@@ -26,4 +28,18 @@ class Database {
 		
 		return self::$pdo;
     }
+}
+
+
+class Alert {
+
+	public static function getMessage(string $text, string $type = "alert-secondary" ):string
+	{
+		return '<div class="alert '.$type.' alert-dismissible fade show mt-5" role="alert">'
+		.$text.
+		'<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		<span aria-hidden="true">&times;</span>
+		</button>
+		</div>';
+	}
 }
