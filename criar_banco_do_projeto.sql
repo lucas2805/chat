@@ -68,5 +68,8 @@ insert into salas
 values
 (3, 1, 'Processadores', 'Conceitos sobre ponteiro, registradores e outros recursos.'),
 (1, 1, 'Javascript nos dias atuais', 'Abordagem sobre a aplicação, percentual de uso no mercado e boas práticas.'),
-(6, 1, 'Modelagem', 'Padronização e nomenclaturas, tipos de dados e restrições de campos.'),
-(5, 1, 'Estruturas de decisão', 'Condicionais, operadores lógicos e Loops.');
+(6, 1, 'MySQL', 'Executar a linguagem SQL - Structured Query Language, ou Linguagem de Consulta Estruturada em QUALQUER banco de dados.'),
+(5, 1, 'Estruturas de decisão', 'Utilizamos lógica para quase tudo em nossas vidas, nada mais justo que utilizarmos também para a área de TI. Você verá que todos os assuntos relacionados a TI obrigatoriamente utilizam conceitos e práticas que serão lecionados durante este curso.'),
+(6, 1, 'Ambiente Transacional', 'Entender todo o ambiente trasacional e optar por continuar seus estudos em ambientes analíticos de Business Intelligence.'),
+(1, 1, 'Python', 'Você será capaz de se tornar um especialista em programação web com algum framework Python.'),
+(3, 1, 'Novas Tecnologias','Tecnologias avançadas para processadores: processadores RISC e CICS, superescalares, vetoriais e pipelines. Arquiteturas paralelas: taxonomias, computadores SIMD e MIMD, memória compartilhada e distribuída, arquiteturas não convencionais. Avaliação de desempenho de arquiteturas de computadores.');

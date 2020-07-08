@@ -17,7 +17,7 @@ $rs_disciplinas = $stm->fetchAll(\PDO::FETCH_ASSOC);
  *  Recuperar as salas cadastradas no banco de dados
  */
 $stm = $pdo->query(
-	"SELECT salas.id as id, salas.tema as tema, salas.descricao as descricao, disciplinas.nome as disciplina FROM salas LEFT JOIN disciplinas ON disciplinas.id = salas.disciplinas_id ORDER BY disciplinas.nome ASC;"
+	"SELECT salas.id as id, salas.tema as tema, salas.descricao as descricao, disciplinas.nome as disciplina FROM salas LEFT JOIN disciplinas ON disciplinas.id = salas.disciplinas_id"
 );
 
 $stm->execute();
@@ -31,7 +31,7 @@ $rs_salas = $stm->fetchAll(\PDO::FETCH_ASSOC);
 
 <div class="container">
 
-<h2 class="text-center mb-4">Salas Disponíveis</h2>
+	<h2 class="text-center font-weight-bold mb-4">Salas Disponíveis</h2>
 	
 		<form autocomplete="off">
 			<div class="form-row align-items-center mt-4">
@@ -57,29 +57,40 @@ $rs_salas = $stm->fetchAll(\PDO::FETCH_ASSOC);
 			</div>
 		</form>
     
-	<div class="row mt-5">
+		<div class='card-columns mt-5'>
 
 		<?php 
 
 				foreach ($rs_salas as $v){
 
-					echo 	
-						'<div class="card border-light col-lg-4 mb-4">'.
-							'<div class="card-body">'.	
-								'<h4 class="text-danger font-weight-bold">'.$v["disciplina"].'</h4><hr>'.								
-								'<h5 class="card-title text-info">'.$v["tema"].'</h5>'.
-								'<p class="card-text">'.$v["descricao"].'</p>'.
-							'</div>'.
-							'<div class="card-footer bg-transparent border-light"><a href="/sala.php?code='.$v["id"].'" class="btn btn-primary">Entrar</a></div>'.
-						'</div>';
+					echo "<div class='card'>
+							<div class='card-body'>	
+								<h4 class='card-title font-weight-bold text-secondary'>{$v["disciplina"]}</h4>																							
+								<h5 class='card-title'>{$v["tema"]}</h5>
+								<p class='card-text'>{$v["descricao"]}</p>					
 							
+								<form method='post' action='sala.php' class='text-right'>
+									<input type='hidden' name='id' value='".$v["id"]."'>
+									<button type='submit' class='btn btn-primary'>Entrar</a>
+								</form>
+							</div>							
+						</div>";	
 				}
 
 		?>
 
-	</div>
+		</div><!-- Fecha .card-columns -->
 
 </div>
+
+
+
+
+
+
+
+
+
 
 <?php
 
