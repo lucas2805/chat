@@ -4,8 +4,20 @@ require_once "../auth.php";
 require_once "../html_header.php";
 
 $pdo = Database::getInstance();
+
+
+/**
+ * Carregar o elemento select que contém todas as disciplinas cadastradas 
+ */
+$stm = $pdo->query("SELECT id, nome FROM disciplinas ORDER BY nome ASC;");
+$rs_disciplinas = $stm->fetchAll(\PDO::FETCH_ASSOC);
+
+
+/**
+ *  Recuperar as salas cadastradas no banco de dados
+ */
 $stm = $pdo->query(
-	"SELECT salas.id as id, salas.tema as tema, salas.descricao as descricao, disciplinas.nome as disciplina FROM salas LEFT JOIN disciplinas ON disciplinas.id = salas.disciplinas_id ORDER BY disciplinas.nome ASC;"
+	"SELECT salas.id as id, salas.tema as tema, salas.descricao as descricao, disciplinas.nome as disciplina FROM salas LEFT JOIN disciplinas ON disciplinas.id = salas.disciplinas_id"
 );
 
 $stm->execute();
@@ -14,15 +26,14 @@ $rs_salas = $stm->fetchAll(\PDO::FETCH_ASSOC);
 ?>
 
 
-<h2 class="text-center">Salas Disponíveis</h2>
+
 
 
 <div class="container">
 
-<div class="row">
-	<div class="col-lg-12">
+	<h2 class="text-center font-weight-bold mb-4">Salas Disponíveis</h2>
 	
-		<form>
+		<form autocomplete="off">
 			<div class="form-row align-items-center mt-4">
 				<div class="col-lg-3">
 				<label class="sr-only" for="disciplina">Disciplina</label>
@@ -40,40 +51,37 @@ $rs_salas = $stm->fetchAll(\PDO::FETCH_ASSOC);
 				</div>
 
 				<div class="col-auto">
-				<button type="submit" class="btn btn-primary mb-2">Pesquisar</button>
+				<button type="submit" class="btn btn-success mb-2">Pesquisar</button>
 				</div>
 
 			</div>
 		</form>
-
-	</div>
-</div>
     
-	<div class="row mt-5">
+		<div class='card-columns mt-5'>
 
 		<?php 
 
 				foreach ($rs_salas as $v){
 
-					echo '<div class="col-lg-4 mb-4">'.
-							'<div class="card">'.
-							'<h5 class="card-header">'.$v["disciplina"].'</h5>'.
-							'<div class="card-body">'.
-								'<h5 class="card-title">'.$v["tema"].'</h5>'.
-								'<p class="card-text">'.$v["descricao"].'</p>'.
-								'<a href="#" class="btn btn-primary">Entrar</a>'.
-							'</div>'.
-							'</div>'.
-						'</div>';
+					echo "<div class='card'>
+							<div class='card-body'>	
+								<h4 class='card-title font-weight-bold text-secondary'>{$v["disciplina"]}</h4>																							
+								<h5 class='card-title'>{$v["tema"]}</h5>
+								<p class='card-text'>{$v["descricao"]}</p>					
+							
+								<form method='post' action='sala.php' class='text-right'>
+									<input type='hidden' name='id' value='".$v["id"]."'>
+									<button type='submit' class='btn btn-primary'>Entrar</a>
+								</form>
+							</div>							
+						</div>";	
 				}
 
 		?>
 
-
-	</div>
+		</div><!-- Fecha .card-columns -->
 
 </div>
-
 
 
 

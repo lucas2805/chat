@@ -6,6 +6,7 @@ $home_active = [
 ];
 
 $bate_papo_active = [
+	"/sala.php",
 	"/sala-nova.php",
 	"/sala-consulta.php"
 ];
