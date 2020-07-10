@@ -43,3 +43,20 @@ class Alert {
 		</div>';
 	}
 }
+
+
+class Token {
+
+	const KEY = 'M!nh@Ch@v3S&cret4';
+
+
+	public static function create(array $payload):string 
+	{
+		//$payload["jti"] = $_SESSION["usuario"]["id"];
+		$payload["exp"] = date("Y-m-d H:i:s", time()+60);
+		$payload = base64_encode(json_encode($payload));
+		$signature = base64_encode(hash_hmac("SHA256",$payload, self::KEY, true));		
+
+		return $payload.".".$signature;
+	}
+}
