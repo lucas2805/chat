@@ -42,12 +42,14 @@ if (count($_POST)){
 
 ?>
 
-<h2 class="text-center">Alterar Senha</h2>
+
 <div class="container">
 
 <div class="row">
 
     <div class="offset-lg-4 col-lg-4">
+
+		<h2 class="titulo-pagina">Alterar Senha</h2>
 
 		<?php echo isset($updated) ? Alert::getMessage("Atualizado com sucesso.","alert-success") : null; ?>
 

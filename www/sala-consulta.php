@@ -31,7 +31,7 @@ $rs_salas = $stm->fetchAll(\PDO::FETCH_ASSOC);
 
 <div class="container">
 
-	<h2 class="text-center font-weight-bold mb-4">Salas Disponíveis</h2>
+	<h2 class="titulo-pagina">Salas Disponíveis</h2>
 	
 		<form autocomplete="off">
 			<div class="form-row align-items-center mt-4">
@@ -65,7 +65,7 @@ $rs_salas = $stm->fetchAll(\PDO::FETCH_ASSOC);
 
 					echo "<div class='card'>
 							<div class='card-body'>	
-								<h4 class='card-title font-weight-bold text-secondary'>{$v["disciplina"]}</h4>																							
+								<h4 class='card-title font-weight-bold text-danger'>{$v["disciplina"]}</h4>																							
 								<h5 class='card-title'>{$v["tema"]}</h5>
 								<p class='card-text'>{$v["descricao"]}</p>					
 							
