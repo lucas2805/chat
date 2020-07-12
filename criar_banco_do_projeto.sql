@@ -43,6 +43,17 @@ constraint fk_mensagens_usuarios_id foreign key (usuarios_id) references usuario
 constraint fk_mensagens_salas_id foreign key (salas_id) references salas (id)
 );
 
+create table usuarios_status (
+id int unsigned not null primary key auto_increment,
+usuarios_id int unsigned not null,
+salas_id int unsigned not null,
+session_id varchar(255) not null,
+updated_at timestamp default current_timestamp() on update current_timestamp(),
+constraint fk_usuarios_status_usuarios_id foreign key (usuarios_id) references usuarios (id),
+constraint fk_usuarios_status_salas_id foreign key (salas_id) references salas (id),
+constraint uq_usuarios_status unique (usuarios_id, salas_id, session_id)
+);
+
 insert into usuarios 
 (login, nome, senha, email) 
 values
@@ -73,11 +84,3 @@ values
 (6, 1, 'Ambiente Transacional', 'Entender todo o ambiente trasacional e optar por continuar seus estudos em ambientes analíticos de Business Intelligence.'),
 (1, 1, 'Python', 'Você será capaz de se tornar um especialista em programação web com algum framework Python.'),
 (3, 1, 'Novas Tecnologias','Tecnologias avançadas para processadores: processadores RISC e CICS, superescalares, vetoriais e pipelines. Arquiteturas paralelas: taxonomias, computadores SIMD e MIMD, memória compartilhada e distribuída, arquiteturas não convencionais. Avaliação de desempenho de arquiteturas de computadores.');
-
-insert into mensagens
-(salas_id, usuarios_id, conteudo)
-values
-(1, 1, 'Prezados participantes. Alguém possui o conteúdo da matéria discutido na semana passada?'),
-(1, 3, 'Bem-vindo ao nosso espaço para discussão do conteúdo acadêmico.'),
-(1, 3, 'Em que podemos ajudá-lo?'),
-(1, 1, 'Gostaria de revisar a aula desta disciplina ...');

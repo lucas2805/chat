@@ -3,7 +3,8 @@ require_once "../classes.php";
 require_once "../auth.php";
 require_once "../html_header.php";
 
-unset($_SESSION["salas_id"]);
+
+
 
 /**
  * Recupero o ID da sala enviado via POST e faço o CAST
@@ -16,6 +17,7 @@ $sala_id = (int)($_POST["id"] ?? null);
 $pdo = Database::getInstance();
 
 /**
+ * Verifico se a sala existe
  * Recupera os dados da sala (disciplina e tema)
  */
 $stm = $pdo->query("SELECT a.id sala_id, a.usuarios_id, a.tema, b.nome
@@ -29,9 +31,29 @@ $stm = $pdo->query("SELECT a.id sala_id, a.usuarios_id, a.tema, b.nome
  */
 if ($stm->rowCount())
 {
+	
+		$pdo = Database::getInstance();
+
+		/**
+		 * Atualiza o status do usuário na tabela de status para conectado
+		 * pois acabou de entrar na sala
+		 */
+
+		$sql = "INSERT INTO usuarios_status (usuarios_id, salas_id, `session_id`)
+			VALUES ({$_SESSION["usuario"]["id"]}, {$sala_id}, \"".session_id()."\") ON DUPLICATE KEY UPDATE 
+			usuarios_id = {$_SESSION["usuario"]["id"]}, salas_id={$sala_id}, `session_id`=\"".session_id()."\", updated_at=\"".date('Y-m-d H:i:s')."\"";
+		
+		$pdo->query($sql);	
+
+
 	$rs_sala = $stm->fetch(\PDO::FETCH_OBJ);
 
-	$_SESSION["usuario"]["sala_id"] = $rs_sala->sala_id;
+	/**
+	 * Armazena o valor do ID na variável de sessão
+	 * para controlar o valor da tabela de status do usuário
+	 * e fornecer o valor como parâmetro quando necessário
+	 */
+	//$_SESSION["usuario"]["sala_id"] = $rs_sala->sala_id;
 
 	/**
 	 * Recuperar as 5 últimas mensagens do banco de dados
@@ -45,8 +67,8 @@ if ($stm->rowCount())
 } else {
 	
 	/**
-	 * Se não encontrou o ID da sala no banco exibe a mensagem abaixo
-	 * e encerra o script
+	 * Se não encontrou o ID da sala no banco, 
+	 * exibe a mensagem abaixo e encerra o script
 	 */
 	echo "<div class=\"container\">
 			<div class=\"row\">
@@ -65,14 +87,9 @@ if ($stm->rowCount())
 
 	<div class="chat-container">
 		<div class="chat-usuarios">
-			<ul>
-				<li>
-					<h4 class="font-weight-bold">Participantes</h4>
-					<hr>
-				</li>
-				<li>Segunda</li>
-				<li>Terceita</li>
-				<li>Quarta</li>
+		<h4 class="font-weight-bold mt-4">Participantes</h4>
+			<ul id="participantes">
+				
 			</ul>
 		</div>
 		<div class="chat-mensagens">
@@ -90,13 +107,15 @@ if ($stm->rowCount())
 				  <button type="submit" id="btn-enviar" class="btn btn-success btn-block">Enviar</button>
 				</div>
 				<div class="col-lg-2 col-6 mt-3 mb-3">
-					<button type="button" id="btn-sair" class="btn btn-danger btn-block">Sair</button>
+					<a href="/sala-consulta.php" class="btn btn-danger btn-block">Sair</a>
 				  </div>
 			</div>
 		</form>
 	</div>
 
 <script>
+
+	
 
 
 	$("#frm_mensagens").on("submit", function(e){		
@@ -106,12 +125,9 @@ if ($stm->rowCount())
 		$.ajax({
 			url: "/mensagens-enviar.php",
 			method: "POST",
-			headers: {
-				"Authorization": "Bearer 012345678"
-			},
-			data:{
+			data: {
 				mensagem: $("#txt_mensagem").val(),
-				token: "token_enviar_mensagem"
+				sala_id: <?php echo $sala_id;?>
 			}
 
 		}).done(function(data, textStatus, jqXHR){		
@@ -126,6 +142,51 @@ if ($stm->rowCount())
 	});
 
 
+
+
+
+
+	function fn_usuarios_status()
+	{
+		setTimeout(function(){ console.log(Math.random());
+
+			$.ajax({
+
+				url: "/usuarios-status.php",
+				method: "GET",
+				data: {
+					salas_id: <?php echo $sala_id;?>
+				}
+
+			}).done(function(data){
+
+				if (data.length > 0){
+
+					$("#participantes").html("");
+
+					for (let i=0; i<data.length; i++){
+
+						const li = document.createElement("li");
+						li.innerHTML = "<span style=\"margin-right:1rem;\">&#128578;</span>" + data[i].login;
+						$("#participantes").append(li);
+					}
+
+				}
+
+				fn_usuarios_status();
+
+			});
+
+		}, 1000);
+
+		
+	}
+
+	fn_usuarios_status();
+
+
+
+
 	function fn_ultima_mensagem()
 	{
 		setTimeout(function(){
@@ -135,12 +196,13 @@ if ($stm->rowCount())
 				url: "/mensagens-recuperar.php",
 				method: "GET",
 				data: {
-					id: $(".mensagens").last().attr("data-id") ?? 0
+					id_ultima_mensagem: $(".mensagens").last().attr("data-id") ?? 0,
+					sala_id: <?php echo $sala_id;?>
 				}
 
 			}).done(function(data){
 
-				if (data.length) {
+				if (data.length > 0) {
 
 					const chat_container = document.querySelector(".chat-mensagens");
 
@@ -173,7 +235,7 @@ if ($stm->rowCount())
 			});
 
 
-		},1000);
+		},800);
 
 	}
 

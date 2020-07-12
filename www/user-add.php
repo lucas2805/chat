@@ -77,16 +77,16 @@ if ( count($_POST) ) {
 
 
 ?>
-<div class="container">
-
-        <h2 class="text-center">Cadastro de Usuário</h2>	
-
-		<form class="mt-4" method="post" autocomplete="off">
+<div class="container">    	
 
 		<div class="row">
 
 			<div class="offset-lg-3 col-lg-6">
 
+			<h2 class="titulo-pagina">Cadastro de Usuário</h2>
+			
+			<form method="post" autocomplete="off">
+			
 				<div class="form-row">
 					<div class="form-group col-lg-12">
 						<label for="nome">Nome completo</label>

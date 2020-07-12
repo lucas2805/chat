@@ -44,7 +44,7 @@ if ( count($_POST) ) {
 		/**
 		 * Declara um consulta preparada para evitar SQLInjection
 		 */
-		$stm = $pdo->prepare("SELECT id, nome, senha FROM usuarios WHERE login = :login");
+		$stm = $pdo->prepare("SELECT id, nome, login, senha FROM usuarios WHERE login = :login");
 
 		$stm->execute([
 			":login" => $login
@@ -60,6 +60,7 @@ if ( count($_POST) ) {
 
 			$_SESSION["usuario"]["id"] = $rs["id"];
 			$_SESSION["usuario"]["nome"] = $rs["nome"];
+			$_SESSION["usuario"]["login"] = $rs["login"];
 			header("location:/");
 
 		} else 
@@ -94,7 +95,7 @@ if ( count($_POST) ) {
 		
 			<div class="form-group">
 				<label for="login">Login</label>
-				<input class="form-control col-lg-12<?php echo isset($erro["login"]) ? " is-invalid" : "";?>" type="text" name="login" value="<?php echo $login ?? "";?>">
+				<input class="form-control text-lowercase col-lg-12<?php echo isset($erro["login"]) ? " is-invalid" : "";?>" type="text" name="login" value="<?php echo $login ?? "";?>">
 				<div class="invalid-feedback"><?php echo $erro["login"] ?? "";?></div>
 			</div>
 

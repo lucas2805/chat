@@ -3,8 +3,8 @@
 require_once "../classes.php";
 require_once "../auth.php";
 
-$mensagem_id = abs((int)($_GET["id"] ?? null));
-$sala_id = (int)($_SESSION["usuario"]["sala_id"] ?? null);
+$mensagem_id = (int)($_GET["id_ultima_mensagem"] ?? null);
+$sala_id = (int)$_GET["sala_id"];
 
 
 isset($sala_id) ?: exit();
@@ -22,11 +22,14 @@ $sql = "SELECT a.id, a.salas_id, a.usuarios_id, a.conteudo, a.created_at,
  */
 if (!$mensagem_id) {
 
-	$sql .= " ORDER BY a.id DESC LIMIT 10;";
+	//$sql .= " ORDER BY a.id DESC LIMIT 10;";
 
 	$stm = $pdo->query($sql);
 	$stm->execute();
-	$rs = array_reverse((array)$stm->fetchAll(\PDO::FETCH_ASSOC));
+	
+	//$rs = array_reverse((array)$stm->fetchAll(\PDO::FETCH_ASSOC));
+
+	$rs = $stm->fetchAll(\PDO::FETCH_ASSOC);
 
 } else {
 
