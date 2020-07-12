@@ -81,7 +81,7 @@ if ( count($_POST) ) {
 
     	<div class="offset-lg-4 col-lg-4">
 
-			<h2 class="text-center">Autenticar</h2>	
+			<h2 class="titulo-pagina">Autenticar</h2>	
 
 			<?php
 				

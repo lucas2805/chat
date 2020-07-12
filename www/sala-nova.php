@@ -50,18 +50,20 @@ if (count($_POST)){
 
 ?>
 
-<h2 class="text-center">Criar Sala</h2>
 
 
-<div class="container">
-    
+
+<div class="container">	
+	
 	<div class="row">
 
-		<div class="offset-lg-4 col-lg-4">
+		<div class="offset-lg-4 col-lg-4"> 
+			
+			<h2 class="titulo-pagina">Criar Sala</h2>
 
 			<?php echo isset($message) ? Alert::getMessage($message["text"], $message["type"]) : null; ?>
 	
-			<form class="mt-4" method="post">
+			<form class="" method="post">
 
 				<div class="form-group">
 					<label class="mr-sm-2" for="disciplinas_id">Disciplina</label>

@@ -78,12 +78,14 @@ require_once "../html_header.php";
 
 ?>
 
-<h2 class="text-center">Dados Pessoais</h2>
+
 <div class="container">
 
 <div class="row">
 
     <div class="offset-lg-4 col-lg-4">
+
+		<h2 class="titulo-pagina">Atualizar meus dados</h2>
 
 		<?php echo isset($updated) ? Alert::getMessage("Atualizado com sucesso.","alert-success") : null; ?>
 
