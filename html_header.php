@@ -84,7 +84,16 @@
 		}
 
 		.chat-mensagens div:last-child {
-			margin-bottom: 6rem;
+			margin-bottom: 2rem;
+		}
+
+		#participantes {
+			margin-top: 1.2rem;
+			margin-bottom:4rem;
+		}
+
+		#participantes li {
+			padding: .3rem 0;
 		}	
 	</style>
 </head>
